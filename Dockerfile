@@ -22,13 +22,14 @@ LABEL org.opencontainers.image.title="pcom-di-airflow3-ubuntu" \
 
 USER root
 
-# Java 17, wget, and Python 3.11 (matches Spark 3.4.1 cluster Python version).
+# Java (default-jdk on Trixie = OpenJDK 21), wget, and Python 3.11 for Spark client mode.
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk wget python3.11 python3.11-venv python3.11-dev python3-pip && \
+    apt-get install -y default-jdk wget python3.11 python3.11-dev python3-pip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+# default-java symlink works across Trixie JDK versions
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Install Spark 3.4.1 to match the standalone cluster version.
