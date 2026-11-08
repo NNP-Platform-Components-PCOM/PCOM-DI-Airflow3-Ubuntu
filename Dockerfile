@@ -26,9 +26,13 @@ USER root
 # Note: Python 3.11 cannot be installed on Trixie due to stdlib conflicts with the base image.
 # Spark client mode uses the image's default Python (3.13). Match on the cluster side if needed.
 RUN apt-get update && \
-    apt-get install -y default-jdk wget gzip && \
+    apt-get install -y default-jdk wget gzip curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Install MinIO client (mc) for DAG sync from MinIO bucket
+RUN curl -fsSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && \
+    chmod +x /usr/local/bin/mc
 
 # default-java symlink works across Trixie JDK versions
 ENV JAVA_HOME=/usr/lib/jvm/default-java
