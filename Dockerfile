@@ -22,9 +22,11 @@ LABEL org.opencontainers.image.title="pcom-di-airflow3-ubuntu" \
 
 USER root
 
-# Java (default-jdk on Trixie = OpenJDK 21), wget, and Python 3.11 for Spark client mode.
+# Java (default-jdk on Trixie = OpenJDK 21) and wget for Spark install.
+# Note: Python 3.11 cannot be installed on Trixie due to stdlib conflicts with the base image.
+# Spark client mode uses the image's default Python (3.13). Match on the cluster side if needed.
 RUN apt-get update && \
-    apt-get install -y default-jdk wget python3.11 python3.11-dev python3-pip && \
+    apt-get install -y default-jdk wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -42,11 +44,6 @@ RUN wget -q https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin-ha
 
 ENV SPARK_HOME=/opt/spark-3.4.1
 ENV PATH=$SPARK_HOME/bin:$PATH
-
-# Python 3.11 venv with pyspark for Spark client mode (driver must match executor Python version).
-RUN python3.11 -m venv /opt/venv-py311 && \
-    /opt/venv-py311/bin/pip install --no-cache-dir pyspark==3.4.1 && \
-    chown -R airflow:root /opt/venv-py311
 
 USER airflow
 
@@ -70,4 +67,5 @@ RUN pip install --no-cache-dir \
     fs-s3fs \
     langchain_text_splitters \
     langchain_huggingface \
-    sentence-transformers
+    sentence-transformers \
+    pyspark==3.4.1
