@@ -26,7 +26,7 @@ USER root
 # Note: Python 3.11 cannot be installed on Trixie due to stdlib conflicts with the base image.
 # Spark client mode uses the image's default Python (3.13). Match on the cluster side if needed.
 RUN apt-get update && \
-    apt-get install -y default-jdk wget && \
+    apt-get install -y default-jdk wget gzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
