@@ -31,7 +31,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install MinIO client (mc) for DAG sync from MinIO bucket
-RUN curl -fsSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && \
+RUN curl -fsSL https://github.com/minio/mc/releases/latest/download/mc.linux-amd64 -o /usr/local/bin/mc && \
     chmod +x /usr/local/bin/mc
 
 # default-java symlink works across Trixie JDK versions
